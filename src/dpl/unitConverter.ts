@@ -84,7 +84,7 @@ export class UnitConverter {
       }
 
       // pressure
-      if (lower.includes("in. w.c") || lower.includes("in w.c")) {
+      if (/in\.?\s*w\.?c\.?/i.test(lower)) {
         numeric *= this.PA_PER_INWC; // in w.c. → Pa
         displayLabel = displayLabel.replace(/in\.?\s*w\.?c\.?/i, "Pa");
       }
