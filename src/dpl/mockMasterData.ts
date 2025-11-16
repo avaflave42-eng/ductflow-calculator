@@ -28,6 +28,87 @@ export const masterData: MasterData = {
     { id: "A7A", "R/D": 3.0, C: 0.13, ANGLE: 150, K: 1.30, dropdown_3: "150" },
     { id: "A7A", "R/D": 3.0, C: 0.13, ANGLE: 180, K: 1.40, dropdown_3: "180" },
     
+    // A10 series - Converging Junctions with proper input labels
+    {
+      id: "A10A1",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A10B",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A10C",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A10D",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A10E",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A10F",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A10H",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A10I1",
+      Input_1: "D_c (in)",
+      Input_2: "D_b1 (in)",
+      Input_3: "D_b2 (in)",
+      Input_4: "Angle (deg)",
+      Input_5: "Q_c (cfm)",
+      Input_6: "Q_b1 (cfm)",
+      Input_7: "Q_b2 (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A10I2",
+      Input_1: "H_c (in)",
+      Input_2: "W_c (in)",
+      Input_3: "H_b (in)",
+      Input_4: "W_b (in)",
+      Input_5: "Angle (deg)",
+      Input_6: "Q_c (cfm)",
+      Input_7: "Q_b1 (cfm)",
+      Input_8: "Q_b2 (cfm)",
+      C: 0.5
+    },
+
     // A11 series - Diverging Junctions with proper input labels
     {
       id: "A11A",
