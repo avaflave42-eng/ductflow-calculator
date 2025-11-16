@@ -11,6 +11,7 @@ import { UnitConverter } from "@/dpl/unitConverter";
 import { UnitSystem, CalcOutputs, CalcInputs } from "@/dpl/types";
 import { CalculationMode } from "@/dpl/calcEngine";
 import { ProofOfMethodPanel } from "@/components/ProofOfMethodPanel";
+import { DuctFunctionViewer } from "@/components/DuctFunctionViewer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -34,7 +35,9 @@ const DPLCalculator = () => {
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(["Elbows"]));
   const [calcInputs, setCalcInputs] = useState<CalcInputs>({});
   const [showProofOfMethod, setShowProofOfMethod] = useState(false);
+  const [showFunctionViewer, setShowFunctionViewer] = useState(false);
   const proofPanelRef = useRef<HTMLDivElement>(null);
+  const functionViewerRef = useRef<HTMLDivElement>(null);
 
   // Apply dynamic dropdowns and input labels from master data
   const selectedDuct = useMemo(() => {
@@ -78,6 +81,7 @@ const DPLCalculator = () => {
     setResults(null);
     setErrors([]);
     setShowProofOfMethod(false);
+    setShowFunctionViewer(false);
   };
 
   const handleUnitSystemChange = (newSystem: UnitSystem) => {
@@ -301,9 +305,23 @@ const DPLCalculator = () => {
                       )}
                     </div>
                   ))}
-                  <Button onClick={handleCalculate} className="w-full mt-4">
-                    Calculate
-                  </Button>
+                  <div className="flex gap-2 mt-4">
+                    <Button onClick={handleCalculate} className="flex-1">
+                      Calculate
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        setShowFunctionViewer(!showFunctionViewer);
+                        setTimeout(() => {
+                          functionViewerRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }, 100);
+                      }}
+                      variant="outline"
+                      className="flex-1"
+                    >
+                      {showFunctionViewer ? "Hide" : "View"} Function Data
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -417,6 +435,17 @@ const DPLCalculator = () => {
           </div>
         </main>
       </div>
+
+      {/* Duct Function Viewer - Below Main Content */}
+      {showFunctionViewer && selectedDuct && (
+        <div ref={functionViewerRef} className="container mx-auto px-6 py-8">
+          <DuctFunctionViewer
+            ductId={selectedDuctId}
+            masterData={masterData}
+            calculationMode={calculationMode}
+          />
+        </div>
+      )}
 
       {/* Proof of Method Panel - Below Main Content */}
       {showProofOfMethod && results && selectedDuct && ductRegistry[selectedDuctId] && (
