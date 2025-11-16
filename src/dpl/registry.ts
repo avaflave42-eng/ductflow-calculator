@@ -77,16 +77,21 @@ import { A13F2_calc } from "./ducts/A13F2";
 import { A13G_calc } from "./ducts/A13G";
 import { A13H_calc } from "./ducts/A13H";
 import { A14A1_calc } from "./ducts/A14A1";
+import { A14A1_calc_v2 } from "./ducts/A14A1_v2";
 import { A14A2_calc } from "./ducts/A14A2";
 import { A14B1_calc } from "./ducts/A14B1";
 import { A14B2_calc } from "./ducts/A14B2";
 import { A15A_calc } from "./ducts/A15A";
+import { A15A_calc_v2 } from "./ducts/A15A_v2";
 import { A15B_calc } from "./ducts/A15B";
+import { A15B_calc_v2 } from "./ducts/A15B_v2";
 import { A15C_calc } from "./ducts/A15C";
+import { A15C_calc_v2 } from "./ducts/A15C_v2";
 import { A15D_calc } from "./ducts/A15D";
 import { A15E_calc } from "./ducts/A15E";
 import { A15F_calc } from "./ducts/A15F";
 import { A15G_calc } from "./ducts/A15G";
+import { A15G_calc_v2 } from "./ducts/A15G_v2";
 import { A15H1_calc } from "./ducts/A15H1";
 import { A15H2_calc } from "./ducts/A15H2";
 
@@ -168,17 +173,17 @@ export const ductRegistry: Record<string, DuctCalcWithMeta> = {
   A13F2: { fn: A13F2_calc, outputType: "standard" },
   A13G: { fn: A13G_calc, outputType: "standard" },
   A13H: { fn: A13H_calc, outputType: "standard" },
-  A14A1: { fn: A14A1_calc, outputType: "standard" },
+  A14A1: { fn: A14A1_calc, fn_v2: A14A1_calc_v2, outputType: "standard" },
   A14A2: { fn: A14A2_calc, outputType: "standard" },
   A14B1: { fn: A14B1_calc, outputType: "standard" },
   A14B2: { fn: A14B2_calc, outputType: "standard" },
-  A15A: { fn: A15A_calc, outputType: "standard" },
-  A15B: { fn: A15B_calc, outputType: "standard" },
-  A15C: { fn: A15C_calc, outputType: "standard" },
+  A15A: { fn: A15A_calc, fn_v2: A15A_calc_v2, outputType: "standard" },
+  A15B: { fn: A15B_calc, fn_v2: A15B_calc_v2, outputType: "standard" },
+  A15C: { fn: A15C_calc, fn_v2: A15C_calc_v2, outputType: "standard" },
   A15D: { fn: A15D_calc, outputType: "standard" },
   A15E: { fn: A15E_calc, outputType: "standard" },
   A15F: { fn: A15F_calc, outputType: "standard" },
-  A15G: { fn: A15G_calc, outputType: "standard" },
+  A15G: { fn: A15G_calc, fn_v2: A15G_calc_v2, outputType: "standard" },
   A15H1: { fn: A15H1_calc, outputType: "standard" },
   A15H2: { fn: A15H2_calc, outputType: "standard" },
 };

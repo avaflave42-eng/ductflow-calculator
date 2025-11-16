@@ -59,5 +59,6 @@ export type DuctCalcFn = (
 
 export interface DuctCalcWithMeta {
   fn: DuctCalcFn;
+  fn_v2?: DuctCalcFn; // Optional interpolated version
   outputType: OutputType;
 }

@@ -9,12 +9,14 @@ import { ductRegistry } from "@/dpl/registry";
 import { runDuctCalculation } from "@/dpl/calcEngine";
 import { UnitConverter } from "@/dpl/unitConverter";
 import { UnitSystem, CalcOutputs } from "@/dpl/types";
+import { CalculationMode } from "@/dpl/calcEngine";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Switch } from "@/components/ui/switch";
 import { AlertCircle, ChevronDown, ChevronRight } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
@@ -23,6 +25,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 const DPLCalculator = () => {
   const [selectedDuctId, setSelectedDuctId] = useState<string>("A7A");
   const [unitSystem, setUnitSystem] = useState<UnitSystem>("imperial");
+  const [calculationMode, setCalculationMode] = useState<CalculationMode>("legacy");
   const [rawInputs, setRawInputs] = useState<Record<string, string>>({});
   const [results, setResults] = useState<CalcOutputs | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
@@ -89,6 +92,7 @@ const DPLCalculator = () => {
       constraints: constraintsByDuct[selectedDuctId] ?? [],
       masterData,
       registry: ductRegistry,
+      mode: calculationMode,
     };
 
     const result = runDuctCalculation(rawInputs, ctx);
@@ -218,7 +222,19 @@ const DPLCalculator = () => {
               {/* Input Parameters */}
               <Card className="h-fit">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Input Parameters ({selectedDuct?.id || "N/A"})</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">Input Parameters ({selectedDuct?.id || "N/A"})</CardTitle>
+                    <div className="flex items-center gap-2">
+                      <Label htmlFor="calc-mode" className="text-xs text-muted-foreground">
+                        {calculationMode === "legacy" ? "Legacy" : "Interpolated"}
+                      </Label>
+                      <Switch
+                        id="calc-mode"
+                        checked={calculationMode === "interpolated"}
+                        onCheckedChange={(checked) => setCalculationMode(checked ? "interpolated" : "legacy")}
+                      />
+                    </div>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   {selectedDuct?.inputs.map((field) => (

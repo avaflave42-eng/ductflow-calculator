@@ -9,12 +9,15 @@ import {
 } from "./types";
 import { UnitConverter } from "./unitConverter";
 
+export type CalculationMode = "legacy" | "interpolated";
+
 export interface CalculationContext {
   duct: DuctDefinition;
   unitSystem: UnitSystem;
   constraints: DuctConstraint[];
   masterData: MasterData;
   registry: Record<string, DuctCalcWithMeta>;
+  mode?: CalculationMode;
 }
 
 export function runDuctCalculation(
@@ -91,8 +94,11 @@ export function runDuctCalculation(
     };
   }
 
-  const { fn, outputType } = registration;
-  const rawOutputs = fn(calcInputs, ctx.masterData);
+  const { fn, fn_v2, outputType } = registration;
+  
+  // Use v2 interpolated function if mode is interpolated and it exists
+  const calcFn = (ctx.mode === "interpolated" && fn_v2) ? fn_v2 : fn;
+  const rawOutputs = calcFn(calcInputs, ctx.masterData);
 
   return {
     outputs: rawOutputs,
