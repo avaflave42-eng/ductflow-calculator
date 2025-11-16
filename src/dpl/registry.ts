@@ -76,6 +76,14 @@ import { A13F1_calc } from "./ducts/A13F1";
 import { A13F2_calc } from "./ducts/A13F2";
 import { A13G_calc } from "./ducts/A13G";
 import { A13H_calc } from "./ducts/A13H";
+import { A14A1_calc } from "./ducts/A14A1";
+import { A14A2_calc } from "./ducts/A14A2";
+import { A14B1_calc } from "./ducts/A14B1";
+import { A14B2_calc } from "./ducts/A14B2";
+import { A15A_calc } from "./ducts/A15A";
+import { A15B_calc } from "./ducts/A15B";
+import { A15C_calc } from "./ducts/A15C";
+import { A15D_calc } from "./ducts/A15D";
 
 export const ductRegistry: Record<string, DuctCalcWithMeta> = {
   A7A: A7A_registration,
@@ -155,4 +163,12 @@ export const ductRegistry: Record<string, DuctCalcWithMeta> = {
   A13F2: { fn: A13F2_calc, outputType: "standard" },
   A13G: { fn: A13G_calc, outputType: "standard" },
   A13H: { fn: A13H_calc, outputType: "standard" },
+  A14A1: { fn: A14A1_calc, outputType: "standard" },
+  A14A2: { fn: A14A2_calc, outputType: "standard" },
+  A14B1: { fn: A14B1_calc, outputType: "standard" },
+  A14B2: { fn: A14B2_calc, outputType: "standard" },
+  A15A: { fn: A15A_calc, outputType: "standard" },
+  A15B: { fn: A15B_calc, outputType: "standard" },
+  A15C: { fn: A15C_calc, outputType: "standard" },
+  A15D: { fn: A15D_calc, outputType: "standard" },
 };
