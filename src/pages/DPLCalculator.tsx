@@ -5,16 +5,14 @@ import { masterData } from "@/dpl/mockMasterData";
 import { ductRegistry } from "@/dpl/registry";
 import { runDuctCalculation } from "@/dpl/calcEngine";
 import { UnitConverter } from "@/dpl/unitConverter";
-import { UnitSystem, CalcOutputs } from "@/dpl/types";
+import { UnitSystem, CalcOutputs, DuctDefinition } from "@/dpl/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, ChevronRight } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { AlertCircle } from "lucide-react";
 
 const DPLCalculator = () => {
   const [selectedDuctId, setSelectedDuctId] = useState<string>("A7A");
@@ -22,17 +20,8 @@ const DPLCalculator = () => {
   const [rawInputs, setRawInputs] = useState<Record<string, string>>({});
   const [results, setResults] = useState<CalcOutputs | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(["Rectangular"]));
 
   const selectedDuct = ductDefinitions.find((d) => d.id === selectedDuctId);
-
-  // Group ducts by fitting type
-  const groupedDucts = ductDefinitions.reduce((acc, duct) => {
-    const category = duct.fitting || "Other";
-    if (!acc[category]) acc[category] = [];
-    acc[category].push(duct);
-    return acc;
-  }, {} as Record<string, typeof ductDefinitions>);
 
   const handleDuctChange = (newDuctId: string) => {
     setSelectedDuctId(newDuctId);
@@ -43,6 +32,9 @@ const DPLCalculator = () => {
 
   const handleUnitSystemChange = (newSystem: UnitSystem) => {
     setUnitSystem(newSystem);
+    setRawInputs({});
+    setResults(null);
+    setErrors([]);
   };
 
   const handleInputChange = (label: string, value: string) => {
@@ -71,258 +63,160 @@ const DPLCalculator = () => {
     }
   };
 
-  const toggleCategory = (category: string) => {
-    setExpandedCategories(prev => {
-      const next = new Set(prev);
-      if (next.has(category)) {
-        next.delete(category);
-      } else {
-        next.add(category);
-      }
-      return next;
-    });
-  };
-
   const getDisplayLabel = (label: string) => {
     return UnitConverter.getDisplayLabel(label, unitSystem);
   };
 
-  // Separate branch and main outputs
-  const branchOutputs = results ? Object.entries(results).filter(([label]) => 
-    label.toLowerCase().includes("branch") && !label.startsWith("_")
-  ) : [];
-  
-  const mainOutputs = results ? Object.entries(results).filter(([label]) => 
-    label.toLowerCase().includes("main") && !label.startsWith("_")
-  ) : [];
-  
-  const standardOutputs = results ? Object.entries(results).filter(([label]) => 
-    !label.toLowerCase().includes("branch") && !label.toLowerCase().includes("main") && !label.startsWith("_")
-  ) : [];
-
-  const hasOutputs = branchOutputs.length > 0 || mainOutputs.length > 0 || standardOutputs.length > 0;
-
   return (
-    <div className="h-screen flex flex-col bg-background">
-      {/* Header */}
-      <header className="border-b bg-card px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">
-              Duct Pressure Loss Calculator (SMACNA)
-            </h1>
-          </div>
-          <div className="flex items-center gap-4">
-            <Label className="text-sm text-muted-foreground">Unit System:</Label>
-            <Select value={unitSystem} onValueChange={(val) => handleUnitSystemChange(val as UnitSystem)}>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="imperial">Imperial</SelectItem>
-                <SelectItem value="metric">Metric</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-background p-6">
+      <div className="mx-auto max-w-6xl space-y-6">
+        <header className="space-y-2">
+          <h1 className="text-3xl font-bold text-foreground">
+            Duct Pressure Loss Calculator
+          </h1>
+          <p className="text-muted-foreground">
+            Internal engineering tool for HVAC duct pressure loss calculations
+          </p>
+        </header>
 
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left Sidebar - Duct Selection Tree */}
-        <aside className="w-80 border-r bg-sidebar overflow-hidden flex flex-col">
-          <div className="p-4 border-b bg-sidebar">
-            <h2 className="font-semibold text-sidebar-foreground">Duct Fitting Cases</h2>
-          </div>
-          <ScrollArea className="flex-1">
-            <div className="p-2">
-              {Object.entries(groupedDucts).map(([category, ducts]) => (
-                <Collapsible
-                  key={category}
-                  open={expandedCategories.has(category)}
-                  onOpenChange={() => toggleCategory(category)}
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Controls Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Configuration</CardTitle>
+              <CardDescription>Select duct fitting and unit system</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label>Duct Fitting</Label>
+                <Select value={selectedDuctId} onValueChange={handleDuctChange}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ductDefinitions.map((duct) => (
+                      <SelectItem key={duct.id} value={duct.id}>
+                        {duct.id} - {duct.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Unit System</Label>
+                <Select
+                  value={unitSystem}
+                  onValueChange={(val) => handleUnitSystemChange(val as UnitSystem)}
                 >
-                  <CollapsibleTrigger className="flex items-center w-full px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent rounded-md">
-                    <ChevronRight className={`h-4 w-4 mr-2 transition-transform ${expandedCategories.has(category) ? 'rotate-90' : ''}`} />
-                    {category}
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <div className="ml-6 mt-1 space-y-1">
-                      {ducts.map((duct) => (
-                        <button
-                          key={duct.id}
-                          onClick={() => handleDuctChange(duct.id)}
-                          className={`w-full text-left px-3 py-2 text-sm rounded-md transition-colors ${
-                            selectedDuctId === duct.id
-                              ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
-                              : "text-sidebar-foreground hover:bg-sidebar-accent"
-                          }`}
-                        >
-                          {duct.name}
-                        </button>
-                      ))}
-                    </div>
-                  </CollapsibleContent>
-                </Collapsible>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="imperial">Imperial (in, cfm, ft/min)</SelectItem>
+                    <SelectItem value="metric">Metric (mm, m³/h, m/s)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Inputs Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Inputs</CardTitle>
+              <CardDescription>
+                {selectedDuct?.name || "Select a duct fitting"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {selectedDuct?.inputs.map((field) => (
+                <div key={field.entryKey} className="space-y-2">
+                  <Label htmlFor={field.entryKey}>
+                    {getDisplayLabel(field.label)}
+                  </Label>
+                  {field.type === "number" && (
+                    <Input
+                      id={field.entryKey}
+                      type="number"
+                      step="any"
+                      value={rawInputs[field.label] ?? ""}
+                      onChange={(e) => handleInputChange(field.label, e.target.value)}
+                      placeholder={field.unitHint}
+                    />
+                  )}
+                  {field.type === "select" && field.options && (
+                    <Select
+                      value={rawInputs[field.label] ?? ""}
+                      onValueChange={(val) => handleInputChange(field.label, val)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={`Select ${field.label}`} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {field.options.map((opt) => (
+                          <SelectItem key={opt} value={opt}>
+                            {opt}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
               ))}
-            </div>
-          </ScrollArea>
-        </aside>
 
-        {/* Main Content Area */}
-        <main className="flex-1 overflow-auto">
-          <div className="h-full flex flex-col">
-            {/* Top Section - Inputs and Outputs */}
-            <div className="grid grid-cols-2 gap-6 p-6 border-b">
-              {/* Input Parameters */}
-              <Card className="h-fit">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Input Parameters ({selectedDuct?.id || "N/A"})</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {selectedDuct?.inputs.map((field) => (
-                    <div key={field.entryKey} className="grid grid-cols-2 items-center gap-3">
-                      <Label htmlFor={field.entryKey} className="text-sm">
-                        {getDisplayLabel(field.label)}:
-                      </Label>
-                      {field.type === "number" && (
-                        <Input
-                          id={field.entryKey}
-                          type="number"
-                          step="any"
-                          value={rawInputs[field.label] ?? ""}
-                          onChange={(e) => handleInputChange(field.label, e.target.value)}
-                          className="h-9"
-                        />
-                      )}
-                      {field.type === "select" && field.options && (
-                        <Select
-                          value={rawInputs[field.label] ?? ""}
-                          onValueChange={(val) => handleInputChange(field.label, val)}
-                        >
-                          <SelectTrigger className="h-9">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {field.options.map((opt) => (
-                              <SelectItem key={opt} value={opt}>
-                                {opt}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      )}
+              <Button onClick={handleCalculate} className="w-full">
+                Calculate
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Errors */}
+        {errors.length > 0 && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              <ul className="list-disc pl-4 space-y-1">
+                {errors.map((err, idx) => (
+                  <li key={idx}>{err}</li>
+                ))}
+              </ul>
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Results */}
+        {results && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Results</CardTitle>
+              <CardDescription>Calculated outputs</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {Object.entries(results).map(([label, value]) => {
+                  if (label.startsWith("_")) return null;
+                  const { label: displayLabel, value: displayValue } =
+                    UnitConverter.formatOutputForDisplay(label, value, unitSystem);
+                  return (
+                    <div
+                      key={label}
+                      className="rounded-lg border bg-card p-4 space-y-1"
+                    >
+                      <div className="text-sm text-muted-foreground">
+                        {displayLabel}
+                      </div>
+                      <div className="text-2xl font-semibold text-foreground">
+                        {displayValue}
+                      </div>
                     </div>
-                  ))}
-                  <Button onClick={handleCalculate} className="w-full mt-4">
-                    Calculate
-                  </Button>
-                </CardContent>
-              </Card>
-
-              {/* Output Results */}
-              <Card className="h-fit">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Output</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {errors.length > 0 && (
-                    <Alert variant="destructive" className="mb-4">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertDescription>
-                        <ul className="list-disc pl-4 space-y-1">
-                          {errors.map((err, idx) => (
-                            <li key={idx} className="text-sm">{err}</li>
-                          ))}
-                        </ul>
-                      </AlertDescription>
-                    </Alert>
-                  )}
-                  
-                  {!hasOutputs && errors.length === 0 && (
-                    <div className="text-sm text-muted-foreground space-y-2">
-                      {selectedDuct?.outputs.map((output) => (
-                        <div key={output.key} className="flex justify-between py-1">
-                          <span>{getDisplayLabel(output.label)}:</span>
-                          <span>N/A</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {hasOutputs && (
-                    <div className="space-y-4">
-                      {/* Branch Outputs */}
-                      {branchOutputs.length > 0 && (
-                        <div>
-                          <h3 className="text-sm font-semibold mb-2 text-foreground">Branch</h3>
-                          <div className="space-y-2">
-                            {branchOutputs.map(([label, value]) => {
-                              const { label: displayLabel, value: displayValue } =
-                                UnitConverter.formatOutputForDisplay(label, value, unitSystem);
-                              return (
-                                <div key={label} className="flex justify-between text-sm py-1">
-                                  <span className="text-muted-foreground">{displayLabel}:</span>
-                                  <span className="font-medium text-foreground">{displayValue}</span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Main Outputs */}
-                      {mainOutputs.length > 0 && (
-                        <div>
-                          <h3 className="text-sm font-semibold mb-2 text-foreground">Main</h3>
-                          <div className="space-y-2">
-                            {mainOutputs.map(([label, value]) => {
-                              const { label: displayLabel, value: displayValue } =
-                                UnitConverter.formatOutputForDisplay(label, value, unitSystem);
-                              return (
-                                <div key={label} className="flex justify-between text-sm py-1">
-                                  <span className="text-muted-foreground">{displayLabel}:</span>
-                                  <span className="font-medium text-foreground">{displayValue}</span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Standard Outputs */}
-                      {standardOutputs.length > 0 && (
-                        <div className="space-y-2">
-                          {standardOutputs.map(([label, value]) => {
-                            const { label: displayLabel, value: displayValue } =
-                              UnitConverter.formatOutputForDisplay(label, value, unitSystem);
-                            return (
-                              <div key={label} className="flex justify-between text-sm py-1">
-                                <span className="text-muted-foreground">{displayLabel}:</span>
-                                <span className="font-medium text-foreground">{displayValue}</span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Bottom Section - Duct Diagram */}
-            <div className="flex-1 p-6">
-              <Card className="h-full">
-                <CardHeader>
-                  <CardTitle className="text-lg">Duct Diagram</CardTitle>
-                </CardHeader>
-                <CardContent className="flex items-center justify-center h-[calc(100%-4rem)]">
-                  <p className="text-muted-foreground text-sm">Duct diagram will be displayed here</p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </main>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
