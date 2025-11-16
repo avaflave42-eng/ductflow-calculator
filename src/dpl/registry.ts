@@ -37,6 +37,14 @@ import { A11A_calc } from "./ducts/A11A";
 import { A11B_calc } from "./ducts/A11B";
 import { A11C_calc } from "./ducts/A11C";
 import { A11D_calc } from "./ducts/A11D";
+import { A11E_calc } from "./ducts/A11E";
+import { A11F_calc } from "./ducts/A11F";
+import { A11G_calc } from "./ducts/A11G";
+import { A11H_calc } from "./ducts/A11H";
+import { A11I_calc } from "./ducts/A11I";
+import { A11J_calc } from "./ducts/A11J";
+import { A11K_calc } from "./ducts/A11K";
+import { A11L_calc } from "./ducts/A11L";
 
 export const ductRegistry: Record<string, DuctCalcWithMeta> = {
   A7A: A7A_registration,
@@ -77,4 +85,12 @@ export const ductRegistry: Record<string, DuctCalcWithMeta> = {
   A11B: { fn: A11B_calc, outputType: "branch_main" },
   A11C: { fn: A11C_calc, outputType: "branch_main" },
   A11D: { fn: A11D_calc, outputType: "branch_main" },
+  A11E: { fn: A11E_calc, outputType: "branch_main" },
+  A11F: { fn: A11F_calc, outputType: "branch_main" },
+  A11G: { fn: A11G_calc, outputType: "branch_main" },
+  A11H: { fn: A11H_calc, outputType: "branch_main" },
+  A11I: { fn: A11I_calc, outputType: "branch_main" },
+  A11J: { fn: A11J_calc, outputType: "branch_main" },
+  A11K: { fn: A11K_calc, outputType: "branch_main" },
+  A11L: { fn: A11L_calc, outputType: "branch_main" },
 };
