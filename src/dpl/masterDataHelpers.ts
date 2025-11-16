@@ -1,7 +1,59 @@
-import { MasterData, MasterTableRow } from "./types";
+import { MasterData, MasterTableRow, DuctDefinition } from "./types";
 
 export function getRowsForId(data: MasterData, ductId: string): MasterTableRow[] {
   return data.rows.filter((row) => row.id === ductId);
+}
+
+/**
+ * Extract input labels from master table for a given duct ID
+ * Looks for Input_1, Input_2, etc. columns that have non-N/A values
+ */
+export function getInputLabelsFromMasterData(
+  data: MasterData,
+  ductId: string
+): Record<string, string> {
+  const rows = getRowsForId(data, ductId);
+  if (rows.length === 0) return {};
+
+  const firstRow = rows[0];
+  const labels: Record<string, string> = {};
+
+  // Check for Input_1 through Input_10
+  for (let i = 1; i <= 10; i++) {
+    const colName = `Input_${i}`;
+    if (firstRow[colName] && firstRow[colName] !== "N/A") {
+      labels[`entry_${i}`] = String(firstRow[colName]);
+    }
+  }
+
+  return labels;
+}
+
+/**
+ * Apply input labels from master data to a duct definition
+ */
+export function applyInputLabelsFromMasterData(
+  ductDef: DuctDefinition,
+  data: MasterData
+): DuctDefinition {
+  const labels = getInputLabelsFromMasterData(data, ductDef.id);
+  
+  if (Object.keys(labels).length === 0) {
+    return ductDef; // No labels found, return as-is
+  }
+
+  const updatedInputs = ductDef.inputs.map((input) => {
+    const label = labels[input.entryKey];
+    if (label) {
+      return { ...input, label };
+    }
+    return input;
+  });
+
+  return {
+    ...ductDef,
+    inputs: updatedInputs,
+  };
 }
 
 export function pickLastWhereColLTE(

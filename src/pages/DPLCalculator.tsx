@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { ductDefinitions } from "@/dpl/ductDefinitions";
 import { applyDynamicDropdowns } from "@/dpl/dynamicDropdowns";
+import { applyInputLabelsFromMasterData } from "@/dpl/masterDataHelpers";
 import { categoriesMap } from "@/dpl/categoriesMap";
 import { constraintsByDuct } from "@/dpl/constraints";
 import { masterData } from "@/dpl/mockMasterData";
@@ -28,11 +29,16 @@ const DPLCalculator = () => {
   const [expandedShapes, setExpandedShapes] = useState<Set<string>>(new Set(["Round"]));
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(["Elbows"]));
 
-  // Apply dynamic dropdowns from master data
+  // Apply dynamic dropdowns and input labels from master data
   const selectedDuct = useMemo(() => {
     const baseDuct = ductDefinitions.find((d) => d.id === selectedDuctId);
     if (!baseDuct) return undefined;
-    return applyDynamicDropdowns(baseDuct, masterData);
+    
+    // First apply input labels from master data
+    const ductWithLabels = applyInputLabelsFromMasterData(baseDuct, masterData);
+    
+    // Then apply dynamic dropdowns
+    return applyDynamicDropdowns(ductWithLabels, masterData);
   }, [selectedDuctId]);
 
   const toggleShape = (shape: string) => {
