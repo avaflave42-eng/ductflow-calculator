@@ -13,6 +13,14 @@ import { A8A_calc } from "./ducts/A8A";
 import { A8B_calc } from "./ducts/A8B";
 import { A8C_calc } from "./ducts/A8C";
 import { A8D_calc } from "./ducts/A8D";
+import { A8E_calc } from "./ducts/A8E";
+import { A8F_calc } from "./ducts/A8F";
+import { A8G_calc } from "./ducts/A8G";
+import { A8H_calc } from "./ducts/A8H";
+import { A8I_calc } from "./ducts/A8I";
+import { A8J_calc } from "./ducts/A8J";
+import { A9A1_calc } from "./ducts/A9A1";
+import { A9A2_calc } from "./ducts/A9A2";
 
 export const ductRegistry: Record<string, DuctCalcWithMeta> = {
   A7A: A7A_registration,
@@ -29,5 +37,13 @@ export const ductRegistry: Record<string, DuctCalcWithMeta> = {
   A8B: { fn: A8B_calc, outputType: "standard" },
   A8C: { fn: A8C_calc, outputType: "standard" },
   A8D: { fn: A8D_calc, outputType: "standard" },
-  // later: A9..., A15...
+  A8E: { fn: A8E_calc, outputType: "standard" },
+  A8F: { fn: A8F_calc, outputType: "standard" },
+  A8G: { fn: A8G_calc, outputType: "standard" },
+  A8H: { fn: A8H_calc, outputType: "standard" },
+  A8I: { fn: A8I_calc, outputType: "standard" },
+  A8J: { fn: A8J_calc, outputType: "standard" },
+  A9A1: { fn: A9A1_calc, outputType: "standard" },
+  A9A2: { fn: A9A2_calc, outputType: "standard" },
+  // later: A9B..., A15...
 };
