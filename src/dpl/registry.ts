@@ -53,6 +53,14 @@ import { A11R_calc } from "./ducts/A11R";
 import { A11S_calc } from "./ducts/A11S";
 import { A11T_calc } from "./ducts/A11T";
 import { A11U_calc } from "./ducts/A11U";
+import { A11V_calc } from "./ducts/A11V";
+import { A11W_calc } from "./ducts/A11W";
+import { A11X_calc } from "./ducts/A11X";
+import { A12A1_calc } from "./ducts/A12A1";
+import { A12A2_calc } from "./ducts/A12A2";
+import { A12B_calc } from "./ducts/A12B";
+import { A12C_calc } from "./ducts/A12C";
+import { A12D1_calc } from "./ducts/A12D1";
 
 export const ductRegistry: Record<string, DuctCalcWithMeta> = {
   A7A: A7A_registration,
@@ -109,4 +117,12 @@ export const ductRegistry: Record<string, DuctCalcWithMeta> = {
   A11S: { fn: A11S_calc, outputType: "branch_main" },
   A11T: { fn: A11T_calc, outputType: "branch_main" },
   A11U: { fn: A11U_calc, outputType: "branch_main" },
+  A11V: { fn: A11V_calc, outputType: "branch_main" },
+  A11W: { fn: A11W_calc, outputType: "dual_branch" },
+  A11X: { fn: A11X_calc, outputType: "dual_branch" },
+  A12A1: { fn: A12A1_calc, outputType: "standard" },
+  A12A2: { fn: A12A2_calc, outputType: "standard" },
+  A12B: { fn: A12B_calc, outputType: "standard" },
+  A12C: { fn: A12C_calc, outputType: "standard" },
+  A12D1: { fn: A12D1_calc, outputType: "standard" },
 };
