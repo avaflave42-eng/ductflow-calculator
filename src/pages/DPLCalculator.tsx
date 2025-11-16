@@ -254,12 +254,12 @@ const DPLCalculator = () => {
             {/* Top Section - Inputs and Outputs */}
             <div className="grid grid-cols-2 gap-6 p-6 border-b">
               {/* Input Parameters */}
-              <Card className="h-fit">
+              <Card className="h-fit bg-input-section border-input-section">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">Input Parameters ({selectedDuct?.id || "N/A"})</CardTitle>
+                    <CardTitle className="text-lg text-input-section-foreground">Input Parameters ({selectedDuct?.id || "N/A"})</CardTitle>
                     <div className="flex items-center gap-2">
-                      <Label htmlFor="calc-mode" className="text-xs text-muted-foreground">
+                      <Label htmlFor="calc-mode" className="text-xs text-input-section-foreground/70">
                         {calculationMode === "legacy" ? "Legacy" : "Interpolated"}
                       </Label>
                       <Switch
@@ -270,7 +270,7 @@ const DPLCalculator = () => {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-3 text-input-section-foreground">
                   {selectedDuct?.inputs.map((field) => (
                     <div key={field.entryKey} className="grid grid-cols-2 items-center gap-3">
                       <Label htmlFor={field.entryKey} className="text-sm">
@@ -326,11 +326,11 @@ const DPLCalculator = () => {
               </Card>
 
               {/* Output Results */}
-              <Card className="h-fit">
+              <Card className="h-fit bg-output-section border-output-section">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">Output</CardTitle>
+                  <CardTitle className="text-lg text-output-section-foreground">Output</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="text-output-section-foreground">
                   {errors.length > 0 && (
                     <Alert variant="destructive" className="mb-4">
                       <AlertCircle className="h-4 w-4" />
