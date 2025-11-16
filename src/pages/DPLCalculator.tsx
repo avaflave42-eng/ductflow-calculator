@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ductDefinitions } from "@/dpl/ductDefinitions";
+import { categoriesMap } from "@/dpl/categoriesMap";
 import { constraintsByDuct } from "@/dpl/constraints";
 import { masterData } from "@/dpl/mockMasterData";
 import { ductRegistry } from "@/dpl/registry";
@@ -12,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, ChevronRight } from "lucide-react";
+import { AlertCircle, ChevronDown, ChevronRight } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -22,17 +23,34 @@ const DPLCalculator = () => {
   const [rawInputs, setRawInputs] = useState<Record<string, string>>({});
   const [results, setResults] = useState<CalcOutputs | null>(null);
   const [errors, setErrors] = useState<string[]>([]);
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(["Rectangular"]));
+  const [expandedShapes, setExpandedShapes] = useState<Set<string>>(new Set(["Round"]));
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(["Elbows"]));
 
   const selectedDuct = ductDefinitions.find((d) => d.id === selectedDuctId);
 
-  // Group ducts by fitting type
-  const groupedDucts = ductDefinitions.reduce((acc, duct) => {
-    const category = duct.fitting || "Other";
-    if (!acc[category]) acc[category] = [];
-    acc[category].push(duct);
-    return acc;
-  }, {} as Record<string, typeof ductDefinitions>);
+  const toggleShape = (shape: string) => {
+    setExpandedShapes(prev => {
+      const next = new Set(prev);
+      if (next.has(shape)) {
+        next.delete(shape);
+      } else {
+        next.add(shape);
+      }
+      return next;
+    });
+  };
+
+  const toggleCategory = (category: string) => {
+    setExpandedCategories(prev => {
+      const next = new Set(prev);
+      if (next.has(category)) {
+        next.delete(category);
+      } else {
+        next.add(category);
+      }
+      return next;
+    });
+  };
 
   const handleDuctChange = (newDuctId: string) => {
     setSelectedDuctId(newDuctId);
@@ -71,17 +89,6 @@ const DPLCalculator = () => {
     }
   };
 
-  const toggleCategory = (category: string) => {
-    setExpandedCategories(prev => {
-      const next = new Set(prev);
-      if (next.has(category)) {
-        next.delete(category);
-      } else {
-        next.add(category);
-      }
-      return next;
-    });
-  };
 
   const getDisplayLabel = (label: string) => {
     return UnitConverter.getDisplayLabel(label, unitSystem);
@@ -128,37 +135,58 @@ const DPLCalculator = () => {
       </header>
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Sidebar - Duct Selection Tree */}
+        {/* Left Sidebar - 3-Level Duct Selection Tree */}
         <aside className="w-80 border-r bg-sidebar overflow-hidden flex flex-col">
           <div className="p-4 border-b bg-sidebar">
             <h2 className="font-semibold text-sidebar-foreground">Duct Fitting Cases</h2>
           </div>
           <ScrollArea className="flex-1">
             <div className="p-2">
-              {Object.entries(groupedDucts).map(([category, ducts]) => (
+              {Object.entries(categoriesMap).map(([shape, categories]) => (
                 <Collapsible
-                  key={category}
-                  open={expandedCategories.has(category)}
-                  onOpenChange={() => toggleCategory(category)}
+                  key={shape}
+                  open={expandedShapes.has(shape)}
+                  onOpenChange={() => toggleShape(shape)}
+                  className="mb-2"
                 >
-                  <CollapsibleTrigger className="flex items-center w-full px-3 py-2 text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent rounded-md">
-                    <ChevronRight className={`h-4 w-4 mr-2 transition-transform ${expandedCategories.has(category) ? 'rotate-90' : ''}`} />
-                    {category}
+                  <CollapsibleTrigger className="flex items-center w-full px-3 py-2 text-sm font-semibold text-sidebar-foreground hover:bg-sidebar-accent rounded-md">
+                    <ChevronDown className={`h-4 w-4 mr-2 transition-transform ${expandedShapes.has(shape) ? '' : '-rotate-90'}`} />
+                    {shape}
                   </CollapsibleTrigger>
                   <CollapsibleContent>
-                    <div className="ml-6 mt-1 space-y-1">
-                      {ducts.map((duct) => (
-                        <button
-                          key={duct.id}
-                          onClick={() => handleDuctChange(duct.id)}
-                          className={`w-full text-left px-3 py-2 text-sm rounded-md transition-colors ${
-                            selectedDuctId === duct.id
-                              ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
-                              : "text-sidebar-foreground hover:bg-sidebar-accent"
-                          }`}
+                    <div className="ml-4 mt-1 space-y-1">
+                      {Object.entries(categories).map(([category, ductIds]) => (
+                        <Collapsible
+                          key={`${shape}-${category}`}
+                          open={expandedCategories.has(`${shape}-${category}`)}
+                          onOpenChange={() => toggleCategory(`${shape}-${category}`)}
                         >
-                          {duct.name}
-                        </button>
+                          <CollapsibleTrigger className="flex items-center w-full px-3 py-1.5 text-xs font-medium text-sidebar-foreground hover:bg-sidebar-accent rounded-md">
+                            <ChevronRight className={`h-3 w-3 mr-2 transition-transform ${expandedCategories.has(`${shape}-${category}`) ? 'rotate-90' : ''}`} />
+                            {category}
+                          </CollapsibleTrigger>
+                          <CollapsibleContent>
+                            <div className="ml-5 mt-1 space-y-0.5">
+                              {ductIds.map((ductId) => {
+                                const ductDef = ductDefinitions.find(d => d.id === ductId);
+                                if (!ductDef) return null;
+                                return (
+                                  <button
+                                    key={ductId}
+                                    onClick={() => handleDuctChange(ductId)}
+                                    className={`w-full text-left px-2 py-1.5 text-xs rounded-md transition-colors ${
+                                      selectedDuctId === ductId
+                                        ? "bg-sidebar-primary text-sidebar-primary-foreground font-medium"
+                                        : "text-sidebar-foreground hover:bg-sidebar-accent"
+                                    }`}
+                                  >
+                                    {ductDef.name}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </CollapsibleContent>
+                        </Collapsible>
                       ))}
                     </div>
                   </CollapsibleContent>
