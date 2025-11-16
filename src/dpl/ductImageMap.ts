@@ -1,13 +1,16 @@
 // Maps duct IDs to their image filenames
 export const ductImageMap: Record<string, string> = {
   // Round > Elbows
-  A7A: "smooth_radius_round_elbow.png",
-  A7B: "mitered_round_elbow.png",
+  A7A: "3_to_5_piece_90_deg.png",
+  A7B: "30_deg_offset.png",
   A7C: "round_elbow_mitered_with_converging_diverging_flow.png",
 
   // Round > Transitions (Diverging Flow)
   A8A: "conical_expansion.png",
   A8C: "round_to_rectangular_expansion.png",
+  A8G: "asymmetric_at_fan_with_duct_sides_straight_top_level.png",
+  A8H: "asymmetric_at_fan_with_duct_sides_straight_top_10_down.png",
+  A8I: "asymmetric_at_fan_with_duct_sides_straight_top_10_up.png",
 
   // Round > Transitions (Converging Flow)
   A9A1: "conical_contraction.png",
@@ -18,6 +21,7 @@ export const ductImageMap: Record<string, string> = {
   A10A: "converging_tee_round.png",
   A10B: "converging_wye_round.png",
   A10E: "converging_wye_with_rectangular_main_round_branch.png",
+  A10H: "converging_curved_wye_rect.png",
   A10I1: "converging_45_wye_round.png",
 
   // Round > Diverging Junctions
@@ -60,9 +64,6 @@ export const ductImageMap: Record<string, string> = {
   A8D: "rectangular_to_round_expansion.png",
   A8E: "rectangular_sides_straight.png",
   A8F: "symmetric_at_fan_with_duct_sides_straight.png",
-  A8G: "asymmetric_at_fan_with_duct_sides_straight_top_level.png",
-  A8H: "asymmetric_at_fan_with_duct_sides_straight_top_10_down.png",
-  A8I: "asymmetric_at_fan_with_duct_sides_straight_top_10_up.png",
   A8J: "pyramidal_at_fan_with_duct.png",
 
   // Rectangular > Transitions (Converging Flow)
@@ -75,7 +76,6 @@ export const ductImageMap: Record<string, string> = {
   A10D: "converging_tee_rect_main_and_branch.png",
   A10F: "converging_tee_rect_45_entry_branch_to_main.png",
   A10G: "rect_converging_wye_symmetrical_dovetail.png",
-  A10H: "converging_curved_wye_rect.png",
   A10I2: "converging_rectangular_wye.png",
 
   // Rectangular > Diverging Junctions
