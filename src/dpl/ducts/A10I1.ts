@@ -60,7 +60,7 @@ export function A10I1_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
   return {
     ...branch1,
     ...branch2,
-    "Main: Velocity (fpm)": Vc,
+    "Main, Converged: Velocity (fpm)": Vc,
     "Main: Vel. Pres (in. w.c.)": VPc,
   };
 }
