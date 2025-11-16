@@ -3,17 +3,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, ZAxis } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { A8AFunctionDetails } from "./A8AFunctionDetails";
+import { X } from "lucide-react";
 
 interface DuctFunctionViewerProps {
   ductId: string;
   masterData: any;
   calculationMode: "legacy" | "interpolated";
+  onClose?: () => void;
 }
 
-export function DuctFunctionViewer({ ductId, masterData, calculationMode }: DuctFunctionViewerProps) {
+export function DuctFunctionViewer({ ductId, masterData, calculationMode, onClose }: DuctFunctionViewerProps) {
   const [activeTab, setActiveTab] = useState("chart");
   
   // Filter master data rows for this duct
@@ -84,10 +87,17 @@ export function DuctFunctionViewer({ ductId, masterData, calculationMode }: Duct
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="flex items-center">
-          Duct Function Data: {ductId}
-          {methodBadge}
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <CardTitle>Duct Function Data: {ductId}</CardTitle>
+            {methodBadge}
+          </div>
+          {onClose && (
+            <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       </CardHeader>
       <CardContent>
         {relevantRows.length === 0 ? (
