@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -14,6 +14,8 @@ interface DuctFunctionViewerProps {
 }
 
 export function DuctFunctionViewer({ ductId, masterData, calculationMode }: DuctFunctionViewerProps) {
+  const [activeTab, setActiveTab] = useState("chart");
+  
   // Filter master data rows for this duct
   const relevantRows = useMemo(() => {
     return masterData.rows.filter((row: any) => row.id === ductId);
@@ -93,7 +95,7 @@ export function DuctFunctionViewer({ ductId, masterData, calculationMode }: Duct
             No master data found for {ductId}
           </div>
         ) : (
-          <Tabs defaultValue="chart" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className={`grid w-full ${ductId === "A8A" ? "grid-cols-3" : "grid-cols-2"}`}>
               <TabsTrigger value="chart">Visualization</TabsTrigger>
               <TabsTrigger value="data">Master Data Table</TabsTrigger>
@@ -258,7 +260,10 @@ export function DuctFunctionViewer({ ductId, masterData, calculationMode }: Duct
             {/* Function Details Tab - A8A specific */}
             {ductId === "A8A" && (
               <TabsContent value="details">
-                <A8AFunctionDetails masterData={masterData} />
+                <A8AFunctionDetails 
+                  masterData={masterData} 
+                  onClose={() => setActiveTab("chart")}
+                />
               </TabsContent>
             )}
           </Tabs>

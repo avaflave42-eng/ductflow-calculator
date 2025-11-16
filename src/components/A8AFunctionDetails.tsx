@@ -3,14 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ZAxis } from "recharts";
+import { X } from "lucide-react";
 import { MasterData } from "@/dpl/types";
 
 interface A8AFunctionDetailsProps {
   masterData: MasterData;
+  onClose?: () => void;
 }
 
-export function A8AFunctionDetails({ masterData }: A8AFunctionDetailsProps) {
+export function A8AFunctionDetails({ masterData, onClose }: A8AFunctionDetailsProps) {
   // Filter A8A rows
   const a8aRows = useMemo(() => {
     return masterData.rows.filter((row) => row.id === "A8A");
@@ -177,7 +180,14 @@ export function A8AFunctionDetails({ masterData }: A8AFunctionDetailsProps) {
       {/* Re Selector */}
       <Card>
         <CardHeader>
-          <CardTitle>Reynolds Number Selection</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle>Reynolds Number Selection</CardTitle>
+            {onClose && (
+              <Button variant="ghost" size="icon" onClick={onClose}>
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
           <RadioGroup value={selectedRe.toString()} onValueChange={(v) => setSelectedRe(Number(v))}>
