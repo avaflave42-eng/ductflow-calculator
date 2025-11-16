@@ -181,3 +181,68 @@ export function extract2DPoints(
       z: row[zKey]
     }));
 }
+
+/**
+ * Extract calculation details for visualization
+ * Analyzes duct type and prepares data for Proof of Method panel
+ */
+export function extractCalculationDetails(
+  ductId: string,
+  inputs: any,
+  masterData: any,
+  registration: any
+): {
+  relevantRows: any[];
+  parameterInfo: { name: string; value: number }[];
+  interpolationPoints: DataPoint1D[] | DataPoint2D[];
+  dimension: '1D' | '2D';
+} | null {
+  const relevantRows = masterData.rows.filter((row: any) => row.id === ductId);
+  
+  if (relevantRows.length === 0) {
+    return null;
+  }
+
+  // Determine dimension based on unique parameter columns
+  const firstRow = relevantRows[0];
+  const parameterColumns = Object.keys(firstRow).filter(
+    key => !['id', 'C', 'K'].includes(key) && 
+           !key.startsWith('Input_') && 
+           !key.startsWith('dropdown_') &&
+           typeof firstRow[key] === 'number'
+  );
+
+  // Simple heuristic: if we have 1-2 parameter columns, it's likely 1D or 2D
+  if (parameterColumns.length === 0) {
+    return null;
+  }
+
+  // For now, assume 1D if we have one clear parameter column
+  const dimension = parameterColumns.length === 1 ? '1D' : '2D';
+  
+  let interpolationPoints: DataPoint1D[] | DataPoint2D[];
+  let parameterInfo: { name: string; value: number }[] = [];
+
+  if (dimension === '1D' && parameterColumns.length > 0) {
+    const paramKey = parameterColumns[0];
+    interpolationPoints = extract1DPoints(relevantRows, paramKey, 'C');
+    
+    // Try to find the parameter value from inputs
+    const paramValue = inputs[`entry_${paramKey}`] || inputs.entry_2 || 0;
+    parameterInfo = [{ name: paramKey, value: Number(paramValue) }];
+  } else {
+    // 2D case
+    interpolationPoints = [];
+    parameterInfo = parameterColumns.map(col => ({
+      name: col,
+      value: 0 // Would need to map from inputs properly
+    }));
+  }
+
+  return {
+    relevantRows,
+    parameterInfo,
+    interpolationPoints,
+    dimension,
+  };
+}
