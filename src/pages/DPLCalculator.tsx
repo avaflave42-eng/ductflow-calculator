@@ -443,6 +443,7 @@ const DPLCalculator = () => {
             ductId={selectedDuctId}
             masterData={masterData}
             calculationMode={calculationMode}
+            onClose={() => setShowFunctionViewer(false)}
           />
         </div>
       )}
