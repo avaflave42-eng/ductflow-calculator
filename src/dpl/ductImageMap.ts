@@ -19,22 +19,21 @@ export const ductImageMap: Record<string, string> = {
 
   // Round > Converging Junctions
   A10A: "converging_tee_round.png",
-  A10B: "converging_wye_round.png",
-  A10E: "converging_wye_with_rectangular_main_round_branch.png",
-  A10H: "converging_curved_wye_rect.png",
+  A10B: "converging_round_wye.png",
+  A10E: "converging_wye_conical.png",
   A10I1: "converging_45_wye_round.png",
 
   // Round > Diverging Junctions
   A11A: "tee_round_straight_main_conical_branch_0deg.png",
   A11B: "tee_round_straight_main_conical_branch_30deg.png",
-  A11C: "tee_round_straight_main_conical_branch_45deg.png",
+  A11C: "diverging_conical_main_branch_45elbow_branch90.png",
   A11D: "tee_round_straight_main_conical_branch_60deg.png",
   A11E: "tee_round_straight_main_conical_branch_90deg.png",
   A11F: "tee_round_straight_main_tapered_branch_90deg.png",
-  A11G: "tee_round_straight_main_round_branch_45deg.png",
+  A11G: "diverging_45_conical_main_and_branch_45elbow_branch90.png",
   A11H: "wye_round_45deg_curved_main.png",
   A11I: "wye_round_45deg_rectangular_main.png",
-  A11J: "tee_round_reducer.png",
+  A11J: "diverging_45wye_rolled45_30elbow_branch45.png",
   A11K: "tee_rectangular_main_round_branch_conical.png",
   A11L: "wye_round_45deg_converging_reducer.png",
   A11M: "tee_round_tapered_main_round_branch_90deg.png",
