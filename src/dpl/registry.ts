@@ -21,6 +21,14 @@ import { A8I_calc } from "./ducts/A8I";
 import { A8J_calc } from "./ducts/A8J";
 import { A9A1_calc } from "./ducts/A9A1";
 import { A9A2_calc } from "./ducts/A9A2";
+import { A9B1_calc } from "./ducts/A9B1";
+import { A9B2_calc } from "./ducts/A9B2";
+import { A9C_calc } from "./ducts/A9C";
+import { A10A1_calc } from "./ducts/A10A1";
+import { A10B_calc } from "./ducts/A10B";
+import { A10C_calc } from "./ducts/A10C";
+import { A10D_calc } from "./ducts/A10D";
+import { A10E_calc } from "./ducts/A10E";
 
 export const ductRegistry: Record<string, DuctCalcWithMeta> = {
   A7A: A7A_registration,
@@ -45,5 +53,12 @@ export const ductRegistry: Record<string, DuctCalcWithMeta> = {
   A8J: { fn: A8J_calc, outputType: "standard" },
   A9A1: { fn: A9A1_calc, outputType: "standard" },
   A9A2: { fn: A9A2_calc, outputType: "standard" },
-  // later: A9B..., A15...
+  A9B1: { fn: A9B1_calc, outputType: "standard" },
+  A9B2: { fn: A9B2_calc, outputType: "standard" },
+  A9C: { fn: A9C_calc, outputType: "standard" },
+  A10A1: { fn: A10A1_calc, outputType: "branch_main" },
+  A10B: { fn: A10B_calc, outputType: "branch_main" },
+  A10C: { fn: A10C_calc, outputType: "branch_main" },
+  A10D: { fn: A10D_calc, outputType: "branch_main" },
+  A10E: { fn: A10E_calc, outputType: "branch_main" },
 };
