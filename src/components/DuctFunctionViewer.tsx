@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ScatterChart, Scatter, ZAxis } from "recharts";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { A8AFunctionDetails } from "./A8AFunctionDetails";
 
 interface DuctFunctionViewerProps {
   ductId: string;
@@ -93,9 +94,10 @@ export function DuctFunctionViewer({ ductId, masterData, calculationMode }: Duct
           </div>
         ) : (
           <Tabs defaultValue="chart" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className={`grid w-full ${ductId === "A8A" ? "grid-cols-3" : "grid-cols-2"}`}>
               <TabsTrigger value="chart">Visualization</TabsTrigger>
               <TabsTrigger value="data">Master Data Table</TabsTrigger>
+              {ductId === "A8A" && <TabsTrigger value="details">Function Details</TabsTrigger>}
             </TabsList>
 
             <TabsContent value="chart" className="space-y-4">
@@ -252,6 +254,13 @@ export function DuctFunctionViewer({ ductId, masterData, calculationMode }: Duct
                 Total rows: {relevantRows.length}
               </div>
             </TabsContent>
+            
+            {/* Function Details Tab - A8A specific */}
+            {ductId === "A8A" && (
+              <TabsContent value="details">
+                <A8AFunctionDetails masterData={masterData} />
+              </TabsContent>
+            )}
           </Tabs>
         )}
       </CardContent>
