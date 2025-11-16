@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { ductDefinitions } from "@/dpl/ductDefinitions";
 import { applyDynamicDropdowns } from "@/dpl/dynamicDropdowns";
 import { applyInputLabelsFromMasterData } from "@/dpl/masterDataHelpers";
@@ -8,8 +8,9 @@ import { masterData } from "@/dpl/mockMasterData";
 import { ductRegistry } from "@/dpl/registry";
 import { runDuctCalculation } from "@/dpl/calcEngine";
 import { UnitConverter } from "@/dpl/unitConverter";
-import { UnitSystem, CalcOutputs } from "@/dpl/types";
+import { UnitSystem, CalcOutputs, CalcInputs } from "@/dpl/types";
 import { CalculationMode } from "@/dpl/calcEngine";
+import { ProofOfMethodPanel } from "@/components/ProofOfMethodPanel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,6 +32,9 @@ const DPLCalculator = () => {
   const [errors, setErrors] = useState<string[]>([]);
   const [expandedShapes, setExpandedShapes] = useState<Set<string>>(new Set(["Round"]));
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(["Elbows"]));
+  const [calcInputs, setCalcInputs] = useState<CalcInputs>({});
+  const [showProofOfMethod, setShowProofOfMethod] = useState(false);
+  const proofPanelRef = useRef<HTMLDivElement>(null);
 
   // Apply dynamic dropdowns and input labels from master data
   const selectedDuct = useMemo(() => {
@@ -73,6 +77,7 @@ const DPLCalculator = () => {
     setRawInputs({});
     setResults(null);
     setErrors([]);
+    setShowProofOfMethod(false);
   };
 
   const handleUnitSystemChange = (newSystem: UnitSystem) => {
@@ -95,15 +100,40 @@ const DPLCalculator = () => {
       mode: calculationMode,
     };
 
+    // Convert raw inputs to standard units and store
+    const convertedInputs: CalcInputs = {};
+    selectedDuct.inputs.forEach((field) => {
+      const rawValue = rawInputs[field.label];
+      if (rawValue !== undefined && rawValue !== "") {
+        const numValue = Number(rawValue);
+        convertedInputs[field.entryKey] = UnitConverter.inputToStandard(
+          field.label,
+          numValue
+        );
+      }
+    });
+    setCalcInputs(convertedInputs);
+
     const result = runDuctCalculation(rawInputs, ctx);
 
     if (result.errors) {
       setErrors(result.errors);
       setResults(null);
+      setShowProofOfMethod(false);
     } else {
       setErrors([]);
       setResults(result.outputs ?? null);
     }
+  };
+
+  const scrollToProof = () => {
+    setShowProofOfMethod(true);
+    setTimeout(() => proofPanelRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+  };
+
+  const scrollToCalculator = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => setShowProofOfMethod(false), 500);
   };
 
 
@@ -374,14 +404,39 @@ const DPLCalculator = () => {
                 <CardHeader>
                   <CardTitle className="text-lg">Duct Diagram</CardTitle>
                 </CardHeader>
-                <CardContent className="flex items-center justify-center h-[calc(100%-4rem)]">
+                <CardContent className="flex flex-col items-center justify-center h-[calc(100%-4rem)] gap-4">
                   <p className="text-muted-foreground text-sm">Duct diagram will be displayed here</p>
+                  {results && (
+                    <Button variant="outline" onClick={scrollToProof}>
+                      Show Calculation Details
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             </div>
           </div>
         </main>
       </div>
+
+      {/* Proof of Method Panel - Below Main Content */}
+      {showProofOfMethod && results && selectedDuct && ductRegistry[selectedDuctId] && (
+        <div ref={proofPanelRef} className="container mx-auto px-6 py-8">
+          <ProofOfMethodPanel
+            ductId={selectedDuctId}
+            inputs={calcInputs}
+            masterData={masterData}
+            results={results}
+            calculationMode={calculationMode}
+            unitSystem={unitSystem}
+            registration={ductRegistry[selectedDuctId]}
+          />
+          <div className="flex justify-center mt-6">
+            <Button variant="outline" onClick={scrollToCalculator}>
+              Return to Calculator
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
