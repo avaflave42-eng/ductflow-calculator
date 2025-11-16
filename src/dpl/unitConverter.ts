@@ -75,8 +75,8 @@ export class UnitConverter {
 
       // length
       if (lower.includes("(in)")) {
-        numeric *= this.MM_PER_IN / 1000; // in → m
-        displayLabel = displayLabel.replace("(in)", "(m)");
+        numeric *= this.MM_PER_IN; // in → mm
+        displayLabel = displayLabel.replace("(in)", "(mm)");
       } else if (lower.includes("(ft)")) {
         const ftToM = 1 / this.FT_PER_M;
         numeric *= ftToM; // ft → m
@@ -101,7 +101,7 @@ export class UnitConverter {
       .replace("(ft/s)", "(m/s)")
       .replace("(cfm)", "(m³/h)")
       .replace("(ft)", "(m)")
-      .replace("(in)", "(m)")
+      .replace("(in)", "(mm)")
       .replace(/in\.?\s*w\.?c\.?/i, "Pa");
   }
 }
