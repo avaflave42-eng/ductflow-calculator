@@ -1,4 +1,5 @@
 import { useState, useMemo, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { ductDefinitions } from "@/dpl/ductDefinitions";
 import { applyDynamicDropdowns } from "@/dpl/dynamicDropdowns";
 import { applyInputLabelsFromMasterData } from "@/dpl/masterDataHelpers";
@@ -25,6 +26,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const DPLCalculator = () => {
+  const navigate = useNavigate();
   const [selectedDuctId, setSelectedDuctId] = useState<string>("A7A");
   const [unitSystem, setUnitSystem] = useState<UnitSystem>("imperial");
   const [calculationMode, setCalculationMode] = useState<CalculationMode>("legacy");
@@ -171,6 +173,13 @@ const DPLCalculator = () => {
             </h1>
           </div>
           <div className="flex items-center gap-4">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/duct-builder')}
+              className="text-sm"
+            >
+              3D Duct Builder (Beta)
+            </Button>
             <Label className="text-sm text-muted-foreground">Unit System:</Label>
             <Select value={unitSystem} onValueChange={(val) => handleUnitSystemChange(val as UnitSystem)}>
               <SelectTrigger className="w-[200px]">
