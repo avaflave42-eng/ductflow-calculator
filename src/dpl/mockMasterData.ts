@@ -28,7 +28,31 @@ export const masterData: MasterData = {
     { id: "A7A", "R/D": 3.0, C: 0.13, ANGLE: 150, K: 1.30, dropdown_3: "150" },
     { id: "A7A", "R/D": 3.0, C: 0.13, ANGLE: 180, K: 1.40, dropdown_3: "180" },
     
-    // A11D example with input labels
+    // A11 series - Diverging Junctions with proper input labels
+    {
+      id: "A11A",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11B",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11C",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
     {
       id: "A11D",
       Input_1: "D_c (in)",
@@ -37,14 +61,178 @@ export const masterData: MasterData = {
       Input_4: "Q_b (cfm)",
       C: 0.5
     },
-    
-    // A11E example
     {
       id: "A11E",
       Input_1: "D_c (in)",
       Input_2: "D_b (in)",
       Input_3: "Q_c (cfm)",
       Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11F",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11G",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11H",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11I",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11J",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11K",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11L",
+      Input_1: "D_c (in)",
+      Input_2: "D_b (in)",
+      Input_3: "Q_c (cfm)",
+      Input_4: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11N",
+      Input_1: "H_c (in)",
+      Input_2: "W_c (in)",
+      Input_3: "H_b (in)",
+      Input_4: "W_b (in)",
+      Input_5: "Q_c (cfm)",
+      Input_6: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11O",
+      Input_1: "H_c (in)",
+      Input_2: "W_c (in)",
+      Input_3: "H_b (in)",
+      Input_4: "W_b (in)",
+      Input_5: "Q_c (cfm)",
+      Input_6: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11P",
+      Input_1: "H_c (in)",
+      Input_2: "W_c (in)",
+      Input_3: "H_b (in)",
+      Input_4: "W_b (in)",
+      Input_5: "Q_c (cfm)",
+      Input_6: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11Q",
+      Input_1: "H_c (in)",
+      Input_2: "W_c (in)",
+      Input_3: "H_b (in)",
+      Input_4: "W_b (in)",
+      Input_5: "Q_c (cfm)",
+      Input_6: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11R",
+      Input_1: "H_c (in)",
+      Input_2: "W_c (in)",
+      Input_3: "H_b (in)",
+      Input_4: "W_b (in)",
+      Input_5: "Q_c (cfm)",
+      Input_6: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11S",
+      Input_1: "H_c (in)",
+      Input_2: "W_c (in)",
+      Input_3: "H_b (in)",
+      Input_4: "W_b (in)",
+      Input_5: "Q_c (cfm)",
+      Input_6: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11T",
+      Input_1: "H_c (in)",
+      Input_2: "W_c (in)",
+      Input_3: "H_b (in)",
+      Input_4: "W_b (in)",
+      Input_5: "Q_c (cfm)",
+      Input_6: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11U",
+      Input_1: "H_c (in)",
+      Input_2: "W_c (in)",
+      Input_3: "H_b (in)",
+      Input_4: "W_b (in)",
+      Input_5: "Q_c (cfm)",
+      Input_6: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11V",
+      Input_1: "H_c (in)",
+      Input_2: "W_c (in)",
+      Input_3: "H_b (in)",
+      Input_4: "W_b (in)",
+      Input_5: "Q_c (cfm)",
+      Input_6: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11W",
+      Input_1: "H_c (in)",
+      Input_2: "W_c (in)",
+      Input_3: "H_b (in)",
+      Input_4: "W_b (in)",
+      Input_5: "Q_c (cfm)",
+      Input_6: "Q_b (cfm)",
+      C: 0.5
+    },
+    {
+      id: "A11X",
+      Input_1: "H_c (in)",
+      Input_2: "W_c (in)",
+      Input_3: "H_b (in)",
+      Input_4: "W_b (in)",
+      Input_5: "Q_c (cfm)",
+      Input_6: "Q_b (cfm)",
       C: 0.5
     },
   ],
