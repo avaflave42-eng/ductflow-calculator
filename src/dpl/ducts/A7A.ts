@@ -7,6 +7,7 @@ import {
 import {
   getRowsForId,
   pickLastWhereColLTE,
+  pickFirstWhereColGTE,
   interp1,
 } from "../masterDataHelpers";
 
@@ -30,9 +31,10 @@ function A7A_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
   const angle = entry3;  // angle [deg]
   const Q = entry4;      // flow [cfm]
 
-  // --- BASIC GEOMETRY ---
-  const areaFt2 = (Math.PI * (D / 12) ** 2) / 4;
-  const velocity = Q / areaFt2; // [ft/min]
+  // --- BASIC GEOMETRY --- (Python lines 36-37)
+  const area_in2 = Math.PI * Math.pow(D / 2, 2);  // Cross-sectional area in square inches
+  const area_ft2 = area_in2 / 144;                // Convert to square feet
+  const velocity = Q / area_ft2;                   // Velocity in ft/min
 
   const rowsA7A = getRowsForId(data, "A7A");
 
@@ -51,7 +53,7 @@ function A7A_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
   }
   const lossCoefficientBase = rdRow["C"] as number;
 
-  // Get angle correction factor
+  // Get angle correction factor (Python lines 40-43: first ANGLE >= entry_3)
   const angleRows = rowsA7A
     .filter(
       (r) =>
@@ -60,28 +62,42 @@ function A7A_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
     )
     .sort((a, b) => (a["ANGLE"] as number) - (b["ANGLE"] as number));
 
-  let correctionFactor = 1.0;
-  if (angleRows.length > 0) {
-    const x = angleRows.map((r) => r["ANGLE"] as number);
-    const y = angleRows.map((r) => r["K"] as number);
-    correctionFactor = interp1(x, y, angle);
+  const angleRow = pickFirstWhereColGTE(angleRows, "ANGLE", angle);
+  if (!angleRow) {
+    throw new Error(`A7A: no ANGLE row >= ${angle}`);
   }
+  const correctionFactor = angleRow["K"] as number;
 
-  // Reynolds Number Correction Factor (RNCF) - stub for now
+  // Reynolds Number Correction Factor (RNCF) (Python lines 45-77)
   const reynolds_number = 8.5 * D * velocity;
   const equivalent_diameter = 23766.76 * Math.pow(velocity, -1.000794);
   
   let rnc_factor = 1.0;
   if (velocity < (23766.76 / equivalent_diameter)) {
+    // Define complete RNCF correction table (Python lines 58-64)
+    const correction_table = {
+      re_values: [1, 2, 3, 4, 6, 8, 10, 14, 20],
+      "0.5": [1.40, 1.26, 1.19, 1.14, 1.09, 1.06, 1.04, 1.0, 1.0],
+      "0.75": [1.77, 1.64, 1.56, 1.46, 1.38, 1.30, 1.15, 1.0, 1.0]
+    };
+
     const re_scaled = reynolds_number / 1e4;
-    // Simplified RNCF table lookup (you'll paste the exact logic later)
-    const correction_table_re = [1, 2, 3, 4, 6, 8, 10, 14, 20];
-    const correction_table_05 = [1.40, 1.26, 1.19, 1.14, 1.09, 1.06, 1.04, 1.0, 1.0];
-    
-    const r_d_rounded = RD <= 0.5 ? "0.5" : "0.75";
-    if (r_d_rounded === "0.5") {
-      rnc_factor = interp1(correction_table_re, correction_table_05, re_scaled);
+
+    // Select R/D column (round to 0.5 or 0.75) (Python line 72)
+    const r_d_column = RD <= 0.5 ? "0.5" : "0.75";
+
+    // Find largest Re in table that is <= re_scaled (Python lines 73-77: ROUND DOWN)
+    // Python uses np.searchsorted(..., side="right") - 1
+    let closest_re_index = 0;
+    for (let i = 0; i < correction_table.re_values.length; i++) {
+      if (correction_table.re_values[i] <= re_scaled) {
+        closest_re_index = i;
+      } else {
+        break;
+      }
     }
+
+    rnc_factor = correction_table[r_d_column as "0.5" | "0.75"][closest_re_index];
   }
 
   const loss_coefficient = lossCoefficientBase * correctionFactor * rnc_factor;
