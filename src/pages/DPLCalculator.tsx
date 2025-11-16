@@ -17,6 +17,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, ChevronDown, ChevronRight } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const DPLCalculator = () => {
   const [selectedDuctId, setSelectedDuctId] = useState<string>("A7A");
@@ -136,6 +137,7 @@ const DPLCalculator = () => {
                 <SelectItem value="metric">Metric</SelectItem>
               </SelectContent>
             </Select>
+            <ThemeToggle />
           </div>
         </div>
       </header>
