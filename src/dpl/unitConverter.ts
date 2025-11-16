@@ -78,9 +78,8 @@ export class UnitConverter {
         numeric *= this.MM_PER_IN; // in → mm
         displayLabel = displayLabel.replace("(in)", "(mm)");
       } else if (lower.includes("(ft)")) {
-        const ftToM = 1 / this.FT_PER_M;
-        numeric *= ftToM; // ft → m
-        displayLabel = displayLabel.replace("(ft)", "(m)");
+        numeric *= (1 / this.FT_PER_M) * 1000; // ft → mm
+        displayLabel = displayLabel.replace("(ft)", "(mm)");
       }
 
       // pressure
@@ -100,7 +99,7 @@ export class UnitConverter {
       .replace("(ft/min)", "(m/s)")
       .replace("(ft/s)", "(m/s)")
       .replace("(cfm)", "(m³/h)")
-      .replace("(ft)", "(m)")
+      .replace("(ft)", "(mm)")
       .replace("(in)", "(mm)")
       .replace(/in\.?\s*w\.?c\.?/i, "Pa");
   }
