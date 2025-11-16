@@ -1,7 +1,3 @@
-import { DuctConstraint } from "./types";
-
-// Placeholder - you'll populate this from the Excel Constraints sheet later
-export const constraintsByDuct: Record<string, DuctConstraint[]> = {
-  A7A: [],
-  // Add constraints for other ducts as needed
-};
+// Re-export constraints from the mock data file
+// This will be replaced with real Excel data later
+export { constraintsByDuct, getConstraintsForDuct } from "./mockConstraintsData";
