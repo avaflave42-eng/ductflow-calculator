@@ -5,7 +5,7 @@ import { applyDynamicDropdowns } from "@/dpl/dynamicDropdowns";
 import { applyInputLabelsFromMasterData } from "@/dpl/masterDataHelpers";
 import { categoriesMap } from "@/dpl/categoriesMap";
 import { constraintsByDuct } from "@/dpl/constraints";
-import { masterData } from "@/dpl/mockMasterData";
+import { masterData } from "@/dpl/masterData";
 import { ductRegistry } from "@/dpl/registry";
 import { runDuctCalculation } from "@/dpl/calcEngine";
 import { UnitConverter } from "@/dpl/unitConverter";
