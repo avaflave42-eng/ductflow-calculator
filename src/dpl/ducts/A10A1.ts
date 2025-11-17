@@ -37,7 +37,7 @@ export function A10A1_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
     ? valid_ab_ac[0]
     : ab_ac_sorted[ab_ac_sorted.length - 1];
 
-  const branch_loss_coefficient = branch_ab_ac_row.C;
+  const branch_loss_coefficient = (branch_ab_ac_row?.C as number) || 0;
 
   // --- MAIN CALCULATIONS (uses A10A2 data) ---
   const vs_vc_ratio = velocity_source / velocity_converged;
@@ -55,7 +55,7 @@ export function A10A1_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
     ? valid_main_ab_ac[0]
     : main_ab_ac_sorted[main_ab_ac_sorted.length - 1];
 
-  const main_loss_coefficient = main_ab_ac_row.C;
+  const main_loss_coefficient = (main_ab_ac_row?.C as number) || 0;
 
   // --- VELOCITY PRESSURES ---
   const branch_velocity_pressure = Math.pow(velocity_branch / 4005, 2);
