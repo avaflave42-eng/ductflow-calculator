@@ -1,4 +1,4 @@
-// Auto-generated from DPL_data-2.xlsx on 2025-11-17T17:31:05.583Z
+// Auto-generated from DPL_data-2.xlsx on 2025-11-17T19:35:27.923Z
 // DO NOT EDIT MANUALLY - Run 'bun scripts/generateMasterData.ts' to regenerate
 // This file contains ~4538 rows of duct fitting data
 
