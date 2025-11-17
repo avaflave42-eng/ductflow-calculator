@@ -61,10 +61,10 @@ export function A10H_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
 
   // Calculate pressure values
   const branch_velocity_pressure = Math.pow(Vb / 4005, 2);
+  const source_velocity_pressure = Math.pow(Vs / 4005, 2);
+  const converged_velocity_pressure = Math.pow(Vc / 4005, 2);
   const branch_pressure_loss = branch_loss_coefficient * branch_velocity_pressure;
-
-  const main_velocity_pressure = Math.pow(Vc / 4005, 2);
-  const main_pressure_loss = main_loss_coefficient * main_velocity_pressure;
+  const main_pressure_loss = main_loss_coefficient * source_velocity_pressure;
 
   return {
     "Branch: Velocity (fpm)": Vb,
@@ -73,7 +73,8 @@ export function A10H_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
     "Branch: Pressure Loss (in. w.c.)": branch_pressure_loss,
     "Main, Source: Velocity (fpm)": Vs,
     "Main, Converged: Velocity (fpm)": Vc,
-    "Main: Vel. Pres (in. w.c.)": main_velocity_pressure,
+    "Main, Source: Vel. Pres (in. w.c.)": source_velocity_pressure,
+    "Main, Converged: Vel. Pres (in. w.c.)": converged_velocity_pressure,
     "Main: Loss Coefficient": main_loss_coefficient,
     "Main: Pressure Loss (in. w.c.)": main_pressure_loss,
   };
