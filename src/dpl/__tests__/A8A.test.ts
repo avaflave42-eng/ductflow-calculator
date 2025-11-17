@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { A8A_calc } from "../ducts/A8A";
 import { A8A_calc_v2 } from "../ducts/A8A_v2";
-import { masterData } from "../mockMasterData";
+import { masterData } from "../masterData";
 import { CalcInputs } from "../types";
 
 describe("A8A - Round Conical Expansion", () => {

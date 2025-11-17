@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { A11E_calc } from "../ducts/A11E";
-import { masterData } from "../mockMasterData";
+import { masterData } from "../masterData";
 import { CalcInputs } from "../types";
 
 describe("A11E - Diverging Junction Round Tee", () => {

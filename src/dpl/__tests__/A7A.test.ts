@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { A7A_registration } from "../ducts/A7A";
-import { masterData } from "../mockMasterData";
+import { masterData } from "../masterData";
 import { CalcInputs } from "../types";
 
 describe("A7A - Round Elbow (R/D)", () => {
