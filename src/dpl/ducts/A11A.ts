@@ -64,7 +64,7 @@ export function A11A_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
     : main_data[0];
 
   const C_main = main_row?.C || 0;
-  const main_loss = C_main * Pvs;
+  const main_loss = C_main * Pvc;
 
   return {
     "Branch: Velocity (fpm)": Vb,
