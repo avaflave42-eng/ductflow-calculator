@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ductDefinitions } from "@/dpl/ductDefinitions";
 import { applyDynamicDropdowns } from "@/dpl/dynamicDropdowns";
@@ -41,6 +41,14 @@ const DPLCalculator = () => {
   const [showFunctionViewer, setShowFunctionViewer] = useState(false);
   const proofPanelRef = useRef<HTMLDivElement>(null);
   const functionViewerRef = useRef<HTMLDivElement>(null);
+
+  // Preload all duct images on mount to eliminate loading delay
+  useEffect(() => {
+    Object.values(ductImageMap).forEach(imagePath => {
+      const img = new Image();
+      img.src = `/duct-images/${imagePath}`;
+    });
+  }, []);
 
   // Apply dynamic dropdowns and input labels from master data
   const selectedDuct = useMemo(() => {
