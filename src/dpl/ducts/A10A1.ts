@@ -57,21 +57,29 @@ export function A10A1_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
 
   const main_loss_coefficient = main_ab_ac_row.C;
 
-  // Calculate pressure values
+  // --- VELOCITY PRESSURES ---
   const branch_velocity_pressure = Math.pow(velocity_branch / 4005, 2);
+
+  // Main: source and converged velocity pressures
+  const main_source_velocity_pressure = Math.pow(velocity_source / 4005, 2);     // Pvs
+  const main_converged_velocity_pressure = Math.pow(velocity_converged / 4005, 2); // Pvc
+
+  // Losses
   const branch_pressure_loss = branch_loss_coefficient * branch_velocity_pressure;
 
-  const main_velocity_pressure = Math.pow(velocity_converged / 4005, 2);
-  const main_pressure_loss = main_loss_coefficient * main_velocity_pressure;
+  // IMPORTANT: main pressure loss uses SOURCE VP (Pvs), not converged VP
+  const main_pressure_loss = main_loss_coefficient * main_source_velocity_pressure;
 
   return {
     "Branch: Velocity (fpm)": velocity_branch,
     "Branch: Vel. Pres (in. w.c.)": branch_velocity_pressure,
     "Branch: Loss Coefficient": branch_loss_coefficient,
     "Branch: Pressure Loss (in. w.c.)": branch_pressure_loss,
+
     "Main, Source: Velocity (fpm)": velocity_source,
     "Main, Converged: Velocity (fpm)": velocity_converged,
-    "Main: Vel. Pres (in. w.c.)": main_velocity_pressure,
+    "Main: Source Vel. Pres (in. w.c.)": main_source_velocity_pressure,
+    "Main: Converged Vel. Pres (in. w.c.)": main_converged_velocity_pressure,
     "Main: Loss Coefficient": main_loss_coefficient,
     "Main: Pressure Loss (in. w.c.)": main_pressure_loss,
   };
