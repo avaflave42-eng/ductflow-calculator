@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { A9A1_calc } from "../ducts/A9A1";
-import { masterData } from "../mockMasterData";
+import { masterData } from "../masterData";
 import { CalcInputs } from "../types";
 
 describe("A9A1 - Round Conical Contraction", () => {

@@ -24,9 +24,9 @@ function generateMasterDataFile() {
 
 import { MasterData } from "./types";
 
-export const masterData: MasterData = {
+export const masterData = {
   rows: ${JSON.stringify(masterData.rows, null, 2)}
-};
+} as MasterData;
 `;
 
   fs.writeFileSync(OUTPUT_FILE, tsContent, 'utf-8');
