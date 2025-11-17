@@ -436,9 +436,12 @@ const DPLCalculator = () => {
                   {selectedDuctId && ductImageMap[selectedDuctId] ? (
                     <div className="flex flex-col items-center gap-4 w-full">
                       <img 
+                        key={selectedDuctId}
                         src={`/duct-images/${ductImageMap[selectedDuctId]}`}
                         alt={`${selectedDuct?.name || selectedDuctId} diagram`}
                         className="max-w-full max-h-96 object-contain"
+                        loading="eager"
+                        decoding="sync"
                       />
                       <p className="text-sm text-muted-foreground">{selectedDuct?.name}</p>
                     </div>
