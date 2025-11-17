@@ -27,45 +27,41 @@ export function A10B_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
 
   const branch_data = data.rows.filter((row) => row.id === "A10B" && row.PATH === "branch");
   
-  // Find best matching row based on both Qb/Qc and Ab/Ac
-  const branch_with_diff = branch_data.map((row) => ({
-    row,
-    qb_diff: Math.abs(row["Qb/Qc"] - Qb_Qc),
-    ab_diff: Math.abs(row["Ab/Ac"] - Ab_Ac),
-  }));
-  
-  const closest_branch = branch_with_diff.sort((a, b) => {
-    // Prioritize Qb/Qc match, then Ab/Ac
-    if (a.qb_diff !== b.qb_diff) return a.qb_diff - b.qb_diff;
-    return a.ab_diff - b.ab_diff;
-  })[0];
+  // Match Qb/Qc (>= Qb_Qc, take smallest)
+  const branch_q_sorted = [...branch_data].sort((a, b) => a["Qb/Qc"] - b["Qb/Qc"]);
+  const valid_branch_q = branch_q_sorted.filter((row) => row["Qb/Qc"] >= Qb_Qc);
+  const closest_branch_q = valid_branch_q.length > 0
+    ? valid_branch_q[0]
+    : branch_q_sorted[branch_q_sorted.length - 1];
 
-  const branch_loss_coefficient = closest_branch?.row.C || 0;
+  // Match Ab/Ac (<= Ab_Ac, take largest)
+  const branch_a_sorted = [...branch_data].sort((a, b) => a["Ab/Ac"] - b["Ab/Ac"]);
+  const valid_branch_a = branch_a_sorted.filter((row) => row["Ab/Ac"] <= Ab_Ac);
+  const closest_branch_a = valid_branch_a.length > 0
+    ? valid_branch_a[valid_branch_a.length - 1]
+    : branch_a_sorted[0];
+
+  const branch_loss_coefficient = closest_branch_q.C * closest_branch_a.C;
 
   // --- MAIN CALCULATIONS ---
   const main_data = data.rows.filter((row) => row.id === "A10B" && row.PATH === "main");
 
-  // Find best matching row based on both Qb/Qc and Ab/Ac
-  const main_with_diff = main_data.map((row) => ({
-    row,
-    qb_diff: Math.abs(row["Qb/Qc"] - Qb_Qc),
-    ab_diff: Math.abs(row["Ab/Ac"] - Ab_Ac),
-  }));
-  
-  const closest_main = main_with_diff.sort((a, b) => {
-    // Prioritize Qb/Qc match, then Ab/Ac
-    if (a.qb_diff !== b.qb_diff) return a.qb_diff - b.qb_diff;
-    return a.ab_diff - b.ab_diff;
-  })[0];
+  // Match Qb/Qc only (>= Qb_Qc, take smallest)
+  const main_q_sorted = [...main_data].sort((a, b) => a["Qb/Qc"] - b["Qb/Qc"]);
+  const valid_main_q = main_q_sorted.filter((row) => row["Qb/Qc"] >= Qb_Qc);
+  const closest_main_q = valid_main_q.length > 0
+    ? valid_main_q[0]
+    : main_q_sorted[main_q_sorted.length - 1];
 
-  const main_loss_coefficient = closest_main?.row.C || 0;
+  const main_loss_coefficient = closest_main_q.C;
 
   // Calculate pressure values
   const branch_velocity_pressure = Math.pow(velocity_branch / 4005, 2);
   const branch_pressure_loss = branch_loss_coefficient * branch_velocity_pressure;
 
-  const main_velocity_pressure = Math.pow(velocity_converged / 4005, 2);
-  const main_pressure_loss = main_loss_coefficient * main_velocity_pressure;
+  const source_velocity_pressure = Math.pow(velocity_source / 4005, 2);
+  const converged_velocity_pressure = Math.pow(velocity_converged / 4005, 2);
+  const main_pressure_loss = main_loss_coefficient * source_velocity_pressure;
 
   return {
     "Branch: Velocity (fpm)": velocity_branch,
@@ -74,7 +70,8 @@ export function A10B_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
     "Branch: Pressure Loss (in. w.c.)": branch_pressure_loss,
     "Main, Source: Velocity (fpm)": velocity_source,
     "Main, Converged: Velocity (fpm)": velocity_converged,
-    "Main: Vel. Pres (in. w.c.)": main_velocity_pressure,
+    "Main, Source: Vel. Pres (in. w.c.)": source_velocity_pressure,
+    "Main, Converged: Vel. Pres (in. w.c.)": converged_velocity_pressure,
     "Main: Loss Coefficient": main_loss_coefficient,
     "Main: Pressure Loss (in. w.c.)": main_pressure_loss,
   };
