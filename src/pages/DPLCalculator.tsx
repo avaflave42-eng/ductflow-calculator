@@ -440,14 +440,14 @@ const DPLCalculator = () => {
                 <CardHeader>
                   <CardTitle className="text-lg">Duct Diagram</CardTitle>
                 </CardHeader>
-                <CardContent className="flex flex-col items-center justify-center h-[calc(100%-4rem)] gap-4">
+                <CardContent className="flex flex-col items-center justify-center h-[calc(100%-4rem)] gap-4 bg-black dark:bg-black">
                   {selectedDuctId && ductImageMap[selectedDuctId] ? (
                     <div className="flex flex-col items-center gap-4 w-full">
                       <img 
                         key={selectedDuctId}
                         src={`/duct-images/${ductImageMap[selectedDuctId]}`}
                         alt={`${selectedDuct?.name || selectedDuctId} diagram`}
-                        className="max-w-full max-h-96 object-contain"
+                        className="max-w-full max-h-96 object-contain dark:invert"
                         loading="eager"
                         decoding="sync"
                       />
