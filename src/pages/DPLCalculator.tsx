@@ -24,6 +24,7 @@ import { AlertCircle, ChevronDown, ChevronRight } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { ductImageMap } from "@/dpl/ductImageMap";
 
 const DPLCalculator = () => {
   const navigate = useNavigate();
@@ -432,7 +433,18 @@ const DPLCalculator = () => {
                   <CardTitle className="text-lg">Duct Diagram</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center justify-center h-[calc(100%-4rem)] gap-4">
-                  <p className="text-muted-foreground text-sm">Duct diagram will be displayed here</p>
+                  {selectedDuctId && ductImageMap[selectedDuctId] ? (
+                    <div className="flex flex-col items-center gap-4 w-full">
+                      <img 
+                        src={`/duct-images/${ductImageMap[selectedDuctId]}`}
+                        alt={`${selectedDuct?.name || selectedDuctId} diagram`}
+                        className="max-w-full max-h-96 object-contain"
+                      />
+                      <p className="text-sm text-muted-foreground">{selectedDuct?.name}</p>
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground text-sm">No diagram available for this duct configuration</p>
+                  )}
                   {results && (
                     <Button variant="outline" onClick={scrollToProof}>
                       Show Calculation Details
