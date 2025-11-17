@@ -4,6 +4,7 @@ export const ductImageMap: Record<string, string> = {
   A7A: "smooth_radius_90_deg.png",
   A7B: "3_to_5_piece_90_deg.png",
   A7C: "mitered_round.png",
+  A7K: "4_90_mitered_ells.png",
 
   // Rectangular > Elbows
   A7D: "mitered_rectangular.png",
@@ -51,10 +52,17 @@ export const ductImageMap: Record<string, string> = {
 
   // Round > Diverging Junctions
   A11A: "diverging_conical_tee_90.png",
+  A11B: "diverging_conical_tee_rolled45_45elbow_branch90.png",
   A11C: "diverging_conical_main_branch_45elbow_branch90.png",
+  A11D: "diverging_conical_tee_rolled45_60elbow_branch45.png",
   A11E: "diverging_conical_tee_90.png",
+  A11F: "diverging_tee_rolled_45_with_45_elbow.png",
   A11G: "diverging_45_conical_main_and_branch_45elbow_branch90.png",
+  A11H: "diverging_conical_wye_45_rolled45_60elbow_branch90.png",
+  A11I: "diverging_conical_wye_45.png",
   A11J: "diverging_45wye_rolled45_30elbow_branch45.png",
+  A11K: "diverging_conical_wye_45_rolled45_30elbow_branch45.png",
+  A11L: "diverging_conical_wye_rolled45_30elbow_branch45.png",
 
   // Rectangular > Diverging Junctions
   A11N: "diverging_tee_45entry_rect_main_and_branch.png",
@@ -67,6 +75,7 @@ export const ductImageMap: Record<string, string> = {
   A11U: "diverging_tee_rect_main_conical_branch.png",
   A11V: "diverging_wye_rect_curved_branch.png",
   A11W: "diverging_rect_wye_dovetail.png",
+  A11X: "diverging_wye_symmetrical.png",
 
   // Round > Entries
   A12A1: "entry_round_duct_mounted_in_wall.png",
