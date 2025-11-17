@@ -61,6 +61,6 @@ export function A10I1_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
     ...branch1,
     ...branch2,
     "Main, Converged: Velocity (fpm)": Vc,
-    "Main: Vel. Pres (in. w.c.)": VPc,
+    "Main, Converged: Vel. Pres (in. w.c.)": VPc,
   };
 }
