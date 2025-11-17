@@ -71,21 +71,22 @@ export function A10D_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
     return diff_a - diff_b;
   })[0];
 
-  // Match Qb/Qc (>= qb_qc_ratio, take smallest)
-  const main_qb_qc_sorted = main_data.sort((a, b) => a["Qb/Qc"] - b["Qb/Qc"]);
-  const valid_main_qb_qc = main_qb_qc_sorted.filter((row) => row["Qb/Qc"] >= qb_qc_ratio);
-  const main_qb_qc_row = valid_main_qb_qc.length > 0
-    ? valid_main_qb_qc[0]
-    : main_qb_qc_sorted[main_qb_qc_sorted.length - 1];
+  // Match Qb/Qs (<= qb_qs_ratio, take largest)
+  const main_qb_qs_sorted = main_data.sort((a, b) => a["Qb/Qs"] - b["Qb/Qs"]);
+  const valid_main_qb_qs = main_qb_qs_sorted.filter((row) => row["Qb/Qs"] <= qb_qs_ratio);
+  const main_qb_qs_row = valid_main_qb_qs.length > 0
+    ? valid_main_qb_qs[valid_main_qb_qs.length - 1]
+    : main_qb_qs_sorted[0];
 
-  const main_loss_coefficient = main_qb_qc_row.C;
+  const main_loss_coefficient = main_qb_qs_row.C;
 
   // Calculate pressure values
   const branch_velocity_pressure = Math.pow(velocity_branch / 4005, 2);
   const branch_pressure_loss = branch_loss_coefficient * branch_velocity_pressure;
 
-  const main_velocity_pressure = Math.pow(velocity_converged / 4005, 2);
-  const main_pressure_loss = main_loss_coefficient * main_velocity_pressure;
+  const source_velocity_pressure = Math.pow(velocity_source / 4005, 2);
+  const converged_velocity_pressure = Math.pow(velocity_converged / 4005, 2);
+  const main_pressure_loss = main_loss_coefficient * source_velocity_pressure;
 
   return {
     "Branch: Velocity (fpm)": velocity_branch,
@@ -94,7 +95,8 @@ export function A10D_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
     "Branch: Pressure Loss (in. w.c.)": branch_pressure_loss,
     "Main, Source: Velocity (fpm)": velocity_source,
     "Main, Converged: Velocity (fpm)": velocity_converged,
-    "Main: Vel. Pres (in. w.c.)": main_velocity_pressure,
+    "Main, Source: Vel. Pres (in. w.c.)": source_velocity_pressure,
+    "Main, Converged: Vel. Pres (in. w.c.)": converged_velocity_pressure,
     "Main: Loss Coefficient": main_loss_coefficient,
     "Main: Pressure Loss (in. w.c.)": main_pressure_loss,
   };
