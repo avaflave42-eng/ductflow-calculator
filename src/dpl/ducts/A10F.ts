@@ -23,11 +23,13 @@ export function A10F_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
   const velocity_branch = entry_4 / area_branch;
 
   // Calculate ratios
-  const qb_qc_ratio = entry_4 / Q_converged;
-  const qb_qs_ratio = entry_4 / entry_3;
+  const As_Ac = 1.0; // Source and converged are the same dimensions
+  const Ab_Ac = 0.5; // Branch area is half the main
+  const Qb_Qc = entry_4 / Q_converged;
+  const Qb_Qs = entry_4 / entry_3;
 
   // ERROR CHECK: Qb/Qs must be >= 0.4
-  if (qb_qs_ratio < 0.4) {
+  if (Qb_Qs < 0.4) {
     return {
       "Error": "Invalid Input: Qb/Qs must be at least 0.4. Increase branch flow rate (Qb) or decrease source flow rate (Qs).",
     };
@@ -43,9 +45,9 @@ export function A10F_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
     ? valid_vc[valid_vc.length - 1]
     : vc_sorted[0];
 
-  // Match Qb/Qc (>= qb_qc_ratio, take smallest)
+  // Match Qb/Qc (>= Qb_Qc, take smallest)
   const qb_qc_sorted = branch_data.sort((a, b) => a["Qb/Qc"] - b["Qb/Qc"]);
-  const valid_qb_qc = qb_qc_sorted.filter((row) => row["Qb/Qc"] >= qb_qc_ratio);
+  const valid_qb_qc = qb_qc_sorted.filter((row) => row["Qb/Qc"] >= Qb_Qc);
   const branch_qb_qc_row = valid_qb_qc.length > 0
     ? valid_qb_qc[0]
     : qb_qc_sorted[qb_qc_sorted.length - 1];
@@ -55,37 +57,32 @@ export function A10F_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
   // --- MAIN CALCULATIONS (uses A10M data with PATH = "main") ---
   const main_data = data.rows.filter((row) => row.id === "A10M" && row.PATH === "main");
 
-  const as_ac_ratio = 1.0;
-  const ab_ac_ratio = 0.5;
-
-  // Find closest As/Ac and Ab/Ac match
-  const main_with_diff = main_data.map((row) => ({
-    ...row,
-    as_ac_diff: Math.abs(row["As/Ac"] - as_ac_ratio),
-    ab_ac_diff: Math.abs(row["Ab/Ac"] - ab_ac_ratio),
+  // Match closest As/Ac
+  const main_as_ac_diff = main_data.map((row) => ({
+    row,
+    diff: Math.abs(row["As/Ac"] - As_Ac),
   }));
+  const main_as_ac_row = main_as_ac_diff.sort((a, b) => a.diff - b.diff)[0];
 
-  const closest_main_row = main_with_diff.sort((a, b) => {
-    const diff_a = a.as_ac_diff + a.ab_ac_diff;
-    const diff_b = b.as_ac_diff + b.ab_ac_diff;
-    return diff_a - diff_b;
-  })[0];
+  // Match: Ab/Ac >= Ab_Ac
+  const main_ab_ac_match = main_data.filter((row) => row["Ab/Ac"] >= Ab_Ac);
+  const main_ab_ac_row =
+    main_ab_ac_match.length > 0 ? main_ab_ac_match[0] : main_data[main_data.length - 1];
 
-  // Match Qb/Qc (>= qb_qc_ratio, take smallest)
-  const main_qb_qc_sorted = main_data.sort((a, b) => a["Qb/Qc"] - b["Qb/Qc"]);
-  const valid_main_qb_qc = main_qb_qc_sorted.filter((row) => row["Qb/Qc"] >= qb_qc_ratio);
-  const main_qb_qc_row = valid_main_qb_qc.length > 0
-    ? valid_main_qb_qc[0]
-    : main_qb_qc_sorted[main_qb_qc_sorted.length - 1];
-
-  const main_loss_coefficient = main_qb_qc_row.C;
+  // Match: Qb/Qs <= Qb_Qs
+  const main_qb_qs_match = main_data.filter((row) => row["Qb/Qs"] <= Qb_Qs);
+  const main_loss_coefficient =
+    main_qb_qs_match.length > 0 
+      ? main_qb_qs_match[main_qb_qs_match.length - 1].C 
+      : main_data[0]?.C || 0;
 
   // Calculate pressure values
   const branch_velocity_pressure = Math.pow(velocity_branch / 4005, 2);
   const branch_pressure_loss = branch_loss_coefficient * branch_velocity_pressure;
 
-  const main_velocity_pressure = Math.pow(velocity_converged / 4005, 2);
-  const main_pressure_loss = main_loss_coefficient * main_velocity_pressure;
+  const source_velocity_pressure = Math.pow(velocity_source / 4005, 2);
+  const converged_velocity_pressure = Math.pow(velocity_converged / 4005, 2);
+  const main_pressure_loss = main_loss_coefficient * source_velocity_pressure;
 
   return {
     "Branch: Velocity (fpm)": velocity_branch,
@@ -94,7 +91,8 @@ export function A10F_calc(inputs: CalcInputs, data: MasterData): CalcOutputs {
     "Branch: Pressure Loss (in. w.c.)": branch_pressure_loss,
     "Main, Source: Velocity (fpm)": velocity_source,
     "Main, Converged: Velocity (fpm)": velocity_converged,
-    "Main: Vel. Pres (in. w.c.)": main_velocity_pressure,
+    "Main, Source: Vel. Pres (in. w.c.)": source_velocity_pressure,
+    "Main, Converged: Vel. Pres (in. w.c.)": converged_velocity_pressure,
     "Main: Loss Coefficient": main_loss_coefficient,
     "Main: Pressure Loss (in. w.c.)": main_pressure_loss,
   };
